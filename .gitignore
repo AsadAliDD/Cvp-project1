@@ -1,5 +1,8 @@
 *.glb
 *.ply
+*.obj
+*.mtl
+*./objects/
 
 
 __pycache__/
