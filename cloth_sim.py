@@ -1,12 +1,10 @@
 import bpy
-import os
-import sys
-
 import pip
 
 pip.main(["install", "pandas", "--user"])
-# sys.path.append("/Users/valkyrie/anaconda3/envs/cvp-1")
+pip.main(["install", "tqdm", "--user"])
 import pandas as pd
+from tqdm import tqdm
 
 
 def purge_orphans():
@@ -92,24 +90,22 @@ def run_simulation(path):
     #    #scene.frame_set(100)
 
     filename = path.split("/")[-1]
-    export_path = f"/Users/valkyrie/Desktop/Workspace/Cvp-project1/cloth/{filename}"
+    export_path = f"./cloth/{filename}"
     print(export_path)
     for frame_no in range(100):
         print("Running frame {}..".format(frame_no))
         bpy.context.scene.frame_set(frame_no + bpy.data.scenes["Scene"].frame_start)
     bpy.ops.export_scene.obj(filepath=export_path, use_materials=False)
+    return export_path
 
 
 def get_objects(annot):
     paths = annot["Path"]
-    for obj_path in paths[0:3]:
-        file_size = os.path.getsize(obj_path) / 1024**2
-        if file_size < 5:
-            print(f"Processing File: {obj_path}")
-            run_simulation(obj_path)
-
-        else:
-            print(f"Skipping {obj_path}")
+    cloth_path = []
+    for obj_path in tqdm(paths):
+        print(f"Processing File: {obj_path}")
+        cloth_path.append(run_simulation(obj_path))
+    annot["Cloth"] = cloth_path
 
 
 def main():
