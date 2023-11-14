@@ -34,7 +34,7 @@ def process_objects():
     result = [
         y for x in os.walk("./raw_objects/") for y in glob(os.path.join(x[0], "*.glb"))
     ]
-    base_folder = "./objects/"
+    base_folder = "./simple_objects/"
     index = 1
     output_paths = []
     labels = []
@@ -63,12 +63,19 @@ def process_objects():
             print(output_path)
             try:
                 procecss_mesh(path, output_path)
+
             except Exception as e:
                 print(e)
-            output_paths.append(output_path)
-            labels.append(label)
-            uids.append(uid)
-            index += 1
+
+            new_file_size = os.path.getsize(output_path) / 1024**2
+            if new_file_size < 5:
+                output_paths.append(output_path)
+                labels.append(label)
+                uids.append(uid)
+                index += 1
+            else:
+                print("Skipping Export File Size Greater than 5 mb")
+                os.remove(output_path)
         else:
             print("File Size Greater than 50. Skipping...")
 
