@@ -95,6 +95,17 @@ def run_simulation(path):
     for frame_no in range(100):
         print("Running frame {}..".format(frame_no))
         bpy.context.scene.frame_set(frame_no + bpy.data.scenes["Scene"].frame_start)
+    #    Reducing Size for Objecet
+    object = bpy.context.scene.objects[0]
+    bpy.context.view_layer.objects.active = object
+    bpy.ops.object.modifier_add(type="DECIMATE")
+    bpy.context.object.modifiers["Decimate"].ratio = 0.3
+
+    #    Reducing Size of Cloth
+    object = bpy.context.scene.objects[1]
+    bpy.context.view_layer.objects.active = object
+    bpy.ops.object.modifier_add(type="DECIMATE")
+    bpy.context.object.modifiers["Decimate"].ratio = 0.1
     bpy.ops.export_scene.obj(filepath=export_path, use_materials=False)
     return export_path
 
